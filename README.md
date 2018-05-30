@@ -1,2 +1,2 @@
 # Video-Sync
-Aim: To build a web app that synchronizes video across multiple devices realtim.
+Aim: To build a web app that synchronizes video across multiple devices realtime.
