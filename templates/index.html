@@ -10,13 +10,18 @@
             var socket = io.connect('http://localhost:5000');
 
             // socket.on('connect', function() {
-            //     socket.emit('connect', {data: 'I\'m connected!'});
+            //     socket.emit('connect');
             // });
 
             $('input.sync').on('change', function(event) {
                 socket.emit('value changed', {who: $(this).attr('id'), data: $(this).val()});
                 return false;
             });
+
+            socket.on('after connect', function(msg, cb){
+            	console.log('After connect', msg);
+            	cb("Voila");
+            })
 
             socket.on('update value', function(msg) {
             	console.log('Value updated');
