@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Synchronized Slider</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var socket = io.connect('http://localhost:5000');
+
+			$('input.sync').on('input', function(event) {
+                socket.emit('Slider value changed', {who: $(this).attr('id'), data: $(this).val()});
+                return false;
+            });
+
+            socket.on('after connect', function(msg){
+            	console.log('After connect', msg);
+            });
+
+            socket.on('update value', function(msg) {
+            	console.log('Slider value updated');
+                $('#'+msg.who).val(msg.data);
+            });
+		});
+	</script>
+</head>
+<body>
+	<div class="container text-center">
+		<h1 >Slider Demo</h1>
+		<form class="mt-5">
+		  <div class="form-group">
+		    <label for="formControlRange">Demo Slider 1</label>
+		    <input type="range" class="form-control-range sync" id="slider1" min="0" max="50" value="{{slider1}}">
+		  </div>
+		  <div class="form-group">
+		    <label for="formControlRange">Demo Slider 2</label>
+		    <input type="range" class="form-control-range sync" id="slider2" min="0" max="50" value="{{slider2}}">
+		  </div>
+		</form>	
+	</div>
+</body>
+</html>

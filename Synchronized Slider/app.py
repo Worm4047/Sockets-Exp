@@ -15,10 +15,9 @@ def index():
 
 @socketio.on('connect')
 def test_connect():
-    print("Connected", request.sid)
-    emit('after connect',  {'data':'Lets dance'}, callback=ack)
+    emit('after connect',  {'data':'Lets dance'})
 
-@socketio.on('value changed')
+@socketio.on('Slider value changed')
 def value_changed(message):
     values[message['who']] = message['data']
     emit('update value', message, broadcast=True)
