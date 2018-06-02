@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Synchronized Slider</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>The Chat App</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-	<script type="text/javascript">
+<!-- 	<script type="text/javascript">
 		$(document).ready(function(){
 
 			// sending a connect request to the server.
@@ -27,21 +28,114 @@
                 $('#'+msg.who).val(msg.data);
             });
 		});
-	</script>
+	</script> -->
+	<style type="text/css">
+
+		.main{
+			/*display: none;*/
+			padding-top: 50px;
+		}
+		.user-name{
+			display:none;
+			height: 400px;
+			max-width: 500px;
+			margin-left: auto;
+			margin-right: auto;
+			padding-top: 70px;
+			background-color: #fbfbfb;
+			border-radius: 5px;
+			border: 1px solid;
+			-webkit-box-shadow: 4px 4px 5px 0px rgba(199,175,199,1);
+			-moz-box-shadow: 4px 4px 5px 0px rgba(199,175,199,1);
+			box-shadow: 4px 4px 5px 0px rgba(199,175,199,1);
+		}
+		.title{
+			text-align: center;
+		}
+		.title h1{
+			font-weight: 400;
+			font-size: 3em;
+		}
+		.list-text {
+		    font-size: 1.5em;
+		    background-color: #e0c9c9;
+		    color: white;
+		}
+		.online-list ul li {
+			cursor: pointer;
+		}
+		.chat-msg {
+			max-height: 500px;
+			overflow-y: auto;
+
+		}
+		.left, 
+		.right {
+			border: none;
+			font-size: 1.4em;
+    		line-height: 1.4em;
+		}
+		.left{
+			text-align: left;
+			background-color: #f0f0f0;
+		}
+		.right{
+			text-align: right;
+		}
+		.chat-box {
+			font-size: 1.6em;
+    		line-height: 1.6em;
+		}
+	</style>
 </head>
 <body>
-	<div class="container text-center">
-		<h1 >Slider Demo</h1>
-		<form class="mt-5">
-		  <div class="form-group">
-		    <label for="formControlRange">Demo Slider 1</label>
-		    <input type="range" class="form-control-range sync" id="slider1" min="0" max="50" value="{{slider1}}">
-		  </div>
-		  <div class="form-group">
-		    <label for="formControlRange">Demo Slider 2</label>
-		    <input type="range" class="form-control-range sync" id="slider2" min="0" max="50" value="{{slider2}}">
-		  </div>
-		</form>	
+	<div class="container user-name mt-5 ">
+
+		<div class="form-group mt-5 align-middle">
+		    <input type="text" class="form-control" placeholder="Enter your username" id="user-name-field">
+		</div>
+		<div class="form-group align-middle">
+		    <input type="submit" class="form-control btn-info" placeholder="Enter your username" id="user-name-submit">
+		</div>
+	</div>
+	<div class="main container text-center">
+		<div class="title">
+			<h1>The Chat App</h1>
+		</div>
+		<div class="row mt-5">
+			<div class="col-lg-4 col-md-4 col-sm-4 online-list">
+				<ul class="list-group">
+				  <li class="list-group-item d-flex  list-text">
+				    People who are online
+				  </li>
+				  <li class="list-group-item d-flex justify-content-between align-items-center active">
+				    Batman
+				  </li>
+				  <li class="list-group-item d-flex justify-content-between align-items-center">
+				    Cap. America
+				  </li>
+				</ul>
+			</div>
+			<div class="col-lg-8 col-md-8 col-sm-8 chat-area">
+				<div id="chat-msg">
+					<ul class="list-group list-group-flush">
+					  <li class="list-group-item left">Cras justo odio</li>
+					  <li class="list-group-item right">Dapibus ac facilisis in</li>
+					  <li class="list-group-item left">Morbi leo risus</li>
+					  <li class="list-group-item right">Porta ac consectetur ac</li>
+					  <li class="list-group-item left">Vestibulum at eros</li>
+					</ul>
+				</div>
+				<div class="row">
+					<div class="form-group mt-3 col-lg-10">
+						<textarea class="form-control" id="chat-box" rows="2" placeholder="Enter your message"></textarea>
+					</div>
+					<div class="form-group mt-3 col-lg-2">
+						<button class="btn btn-info"> Send </button>
+					</div>
+				</div>
+			</div>			
+		</div>
 	</div>
 </body>
 </html>
