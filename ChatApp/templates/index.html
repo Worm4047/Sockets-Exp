@@ -26,19 +26,19 @@
 					// return `<li class="list-group-item d-flex justify-content-between align-items-center active_user" id=${user}>${user}</li>`;
 				});
 				list_item_array.forEach(function(list_item){
-					console.log(list_item);
+					// console.log(list_item);
 					$list.append(list_item);
 				});
 			}
 
 			function display_chat(messages){
-				console.log(messages);
+				// console.log(messages);
 				let $list = $('.msg-list');
 				$list.html(``);
 				if(messages.length == 0)
 					return;
 				let list_item_array = messages.map(function(message){
-					console.log(message);
+					// console.log(message);
 					let $li = $("<li>", {"class": "list-group-item msg-item"});
 					if(message['sender'] === username)
 						$li.addClass('right');
@@ -49,16 +49,16 @@
 					// return `<li class="list-group-item d-flex justify-content-between align-items-center active_user" id=${user}>${user}</li>`;
 				});
 				list_item_array.forEach(function(list_item){
-					console.log(list_item);
+					// console.log(list_item);
 					$list.append(list_item);
 				});
-				console.log($list);		
+				// console.log($list);		
 			}
 
 			function add_message_to_chat(message, sender){
 					let $list = $('.msg-list');
 					let $li = $("<li>", {"class": "list-group-item msg-item"});
-					console.log(username, chatting_with, sender);
+					// console.log(username, chatting_with, sender);
 					if(sender === username)
 						$li.addClass('right');
 					else if(sender === chatting_with)
@@ -81,7 +81,7 @@
 			});	
 
 			$('#send_message').click(function(event){
-				console.log('Inside send message');
+				// console.log('Inside send message');
 				let message = $('#chat-box').val();
 				if(message.length == 0) return;
 				socket.emit('new message', {message: message, from: username, to: chatting_with});
@@ -90,25 +90,25 @@
 			})
 
 			socket.on('active users updated', function(message){
-				console.log('Inside active users updated', message);
+				// console.log('Inside active users updated', message);
 				update_online_users(message);
 			});
 
 			socket.on('display chat', function(message){
 				// message = JSON.parse(message);
-				console.log('Inside display chat', message);
+				// console.log('Inside display chat', message);
 				display_chat(message);
 			});
 
 			socket.on('incoming message', function(message){
-				console.log('incoming message', message);
+				// console.log('incoming message', message);
 				add_message_to_chat(message['message'], message['from']);
 			})
 
 
 
 			$(document).on('click','.active-user',function(event){
-				console.log('Online user clicked',  event.target['id']);
+				// console.log('Online user clicked',  event.target['id']);
 				let userid = event.target['id'];
 				socket.emit('fetch chat', {username: username, userid: userid});
 				chatting_with = userid;

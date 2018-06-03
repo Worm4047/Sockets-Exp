@@ -19,10 +19,10 @@ def test_connect():
 
 @socketio.on('new user')
 def new_user(message):
-	print 'Inside new user'
+	# print 'Inside new user'
 	user = message['username']
 	sid = request.sid
-	print user, sid
+	# print user, sid
 	if not user in active_users:
 		active_users.append(user)
 		messages[user] = {}
@@ -31,10 +31,10 @@ def new_user(message):
 
 @socketio.on('fetch chat')
 def fetch_chat(data):
-	print 'Inside fetch chat'
+	# print 'Inside fetch chat'
 	username = data['username']
 	userid = data['userid']
-	print username, userid, messages
+	# print username, userid, messages
 	sid1 = user_sid[username]
 	sid2 = user_sid[userid]
 	# print sid1, sid2
@@ -45,7 +45,7 @@ def fetch_chat(data):
 
 @socketio.on('new message')
 def new_message(data):
-	print data
+	# print data
 	message = data['message']
 	username = data['from']
 	chatting_with = data['to']
