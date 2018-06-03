@@ -1,0 +1,14 @@
+{
+	"user 1" : {
+		"user 2" : [
+			{ "message" : "Hello", "sender" : "user 1"}, 
+			{ "message" : "Hi", "sender" : "user 2"}
+		]
+	},
+	"user 2" : {
+		"user 1" : [
+			{ "message" : "Hello", "sender" : "user 1"}, 
+			{ "message" : "Hi", "sender" : "user 2"}
+		]
+	}
+}

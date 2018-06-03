@@ -7,36 +7,124 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-<!-- 	<script type="text/javascript">
+	<script type="text/javascript">
 		$(document).ready(function(){
+
+			var username;
+			var chatting_with;
+			function update_online_users(users){
+				let $list = $('.online-list ul');
+				$list.html(`<li class="list-group-item d-flex  list-text">People who are online</li>`);
+				let list_item_array = users.filter(function(user){
+					if(user === username)
+						return false;
+					return true;
+				}).map(function(user){
+					let $li = $("<li>", {id: user, "class": "list-group-item d-flex justify-content-between align-items-center active-user"});
+					$li.html(user);
+					return $li;
+					// return `<li class="list-group-item d-flex justify-content-between align-items-center active_user" id=${user}>${user}</li>`;
+				});
+				list_item_array.forEach(function(list_item){
+					console.log(list_item);
+					$list.append(list_item);
+				});
+			}
+
+			function display_chat(messages){
+				console.log(messages);
+				let $list = $('.msg-list');
+				$list.html(``);
+				if(messages.length == 0)
+					return;
+				let list_item_array = messages.map(function(message){
+					console.log(message);
+					let $li = $("<li>", {"class": "list-group-item msg-item"});
+					if(message['sender'] === username)
+						$li.addClass('right');
+					else
+						$li.addClass('left');
+					$li.html(message['message']);
+					return $li;
+					// return `<li class="list-group-item d-flex justify-content-between align-items-center active_user" id=${user}>${user}</li>`;
+				});
+				list_item_array.forEach(function(list_item){
+					console.log(list_item);
+					$list.append(list_item);
+				});
+				console.log($list);		
+			}
+
+			function add_message_to_chat(message, sender){
+					let $list = $('.msg-list');
+					let $li = $("<li>", {"class": "list-group-item msg-item"});
+					console.log(username, chatting_with, sender);
+					if(sender === username)
+						$li.addClass('right');
+					else if(sender === chatting_with)
+						$li.addClass('left');
+					else
+						return;
+					$li.html(message);
+					$list.append($li);			
+			}
 
 			// sending a connect request to the server.
 			var socket = io.connect('http://localhost:5000');
 
-			// An event handler for a change of value 
-			$('input.sync').on('input', function(event) {
-                socket.emit('Slider value changed', {who: $(this).attr('id'), data: $(this).val()});
-                return false;
-            });
+			$('#user-name-submit').click(function(event){
+				username = $('#user-name-field').val();
+				if(username.length == 0) return false;
+				socket.emit('new user', {username: username});
+				$('.user-name').hide();
+				$('.main').show();
+			});	
 
-            socket.on('after connect', function(msg){
-            	console.log('After connect', msg);
-            });
+			$('#send_message').click(function(event){
+				console.log('Inside send message');
+				let message = $('#chat-box').val();
+				if(message.length == 0) return;
+				socket.emit('new message', {message: message, from: username, to: chatting_with});
+				add_message_to_chat(message, username);
+				return;
+			})
 
-            socket.on('update value', function(msg) {
-            	console.log('Slider value updated');
-                $('#'+msg.who).val(msg.data);
-            });
+			socket.on('active users updated', function(message){
+				console.log('Inside active users updated', message);
+				update_online_users(message);
+			});
+
+			socket.on('display chat', function(message){
+				// message = JSON.parse(message);
+				console.log('Inside display chat', message);
+				display_chat(message);
+			});
+
+			socket.on('incoming message', function(message){
+				console.log('incoming message', message);
+				add_message_to_chat(message['message'], message['from']);
+			})
+
+
+
+			$(document).on('click','.active-user',function(event){
+				console.log('Online user clicked',  event.target['id']);
+				let userid = event.target['id'];
+				socket.emit('fetch chat', {username: username, userid: userid});
+				chatting_with = userid;
+				return false;
+			})
+
 		});
-	</script> -->
+	</script>
 	<style type="text/css">
 
 		.main{
-			/*display: none;*/
+			display: none;
 			padding-top: 50px;
 		}
 		.user-name{
-			display:none;
+			/*display:none;*/
 			height: 400px;
 			max-width: 500px;
 			margin-left: auto;
@@ -64,10 +152,12 @@
 		.online-list ul li {
 			cursor: pointer;
 		}
-		.chat-msg {
-			max-height: 500px;
+		#chat-msg {
+			height: 300px;
+			max-height: 350px;
 			overflow-y: auto;
-
+			border-radius: 5px;
+			border: solid 1px;
 		}
 		.left, 
 		.right {
@@ -81,21 +171,27 @@
 		}
 		.right{
 			text-align: right;
+			background-color: #aee2e2;
 		}
 		.chat-box {
 			font-size: 1.6em;
     		line-height: 1.6em;
 		}
+		#send_message{
+			width: 100%;
+		}
 	</style>
 </head>
 <body>
 	<div class="container user-name mt-5 ">
-
+		<div class="title">
+			<h1>The Chat App</h1>
+		</div>
 		<div class="form-group mt-5 align-middle">
 		    <input type="text" class="form-control" placeholder="Enter your username" id="user-name-field">
 		</div>
 		<div class="form-group align-middle">
-		    <input type="submit" class="form-control btn-info" placeholder="Enter your username" id="user-name-submit">
+		    <button  class="btn form-control btn-info" placeholder="Enter your username" id="user-name-submit">Enter</button>
 		</div>
 	</div>
 	<div class="main container text-center">
@@ -105,33 +201,19 @@
 		<div class="row mt-5">
 			<div class="col-lg-4 col-md-4 col-sm-4 online-list">
 				<ul class="list-group">
-				  <li class="list-group-item d-flex  list-text">
-				    People who are online
-				  </li>
-				  <li class="list-group-item d-flex justify-content-between align-items-center active">
-				    Batman
-				  </li>
-				  <li class="list-group-item d-flex justify-content-between align-items-center">
-				    Cap. America
-				  </li>
 				</ul>
 			</div>
 			<div class="col-lg-8 col-md-8 col-sm-8 chat-area">
 				<div id="chat-msg">
-					<ul class="list-group list-group-flush">
-					  <li class="list-group-item left">Cras justo odio</li>
-					  <li class="list-group-item right">Dapibus ac facilisis in</li>
-					  <li class="list-group-item left">Morbi leo risus</li>
-					  <li class="list-group-item right">Porta ac consectetur ac</li>
-					  <li class="list-group-item left">Vestibulum at eros</li>
+					<ul class="list-group list-group-flush msg-list">
 					</ul>
 				</div>
 				<div class="row">
-					<div class="form-group mt-3 col-lg-10">
+					<div class="form-group mt-3 col-lg-10 col-md-9 col-sm-12">
 						<textarea class="form-control" id="chat-box" rows="2" placeholder="Enter your message"></textarea>
 					</div>
-					<div class="form-group mt-3 col-lg-2">
-						<button class="btn btn-info"> Send </button>
+					<div class="form-group mt-3 col-lg-2 col-md-3 col-sm-12">
+						<button class="btn btn-info text-center" id="send_message"> Send </button>
 					</div>
 				</div>
 			</div>			
